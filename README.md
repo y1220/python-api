@@ -34,7 +34,7 @@ If you haven't already created the environment, you can create it by running:
 conda create --name python-api python=3.10
 ```
 
-## 3. Setting up the Python Interpreter
+### 3. Setting up the Python Interpreter
 When working on a Python project, it's essential to configure the Python **interpreter** correctly. 
 The interpreter is the program that reads and executes your Python code. Configuring the correct interpreter ensures that your project uses the proper version of Python and the required libraries.
 
@@ -49,9 +49,9 @@ The interpreter is the program that reads and executes your Python code. Configu
      - Choose the appropriate interpreter, either from the Conda environment or the virtual environment (`venv`).
 
 
-## Installing Flask and Running the API
+### Installing Flask and Running the API
 
-## 4. Install Flask
+### 4. Install Flask
 
 To install Flask, you need to ensure you're in the correct environment (e.g., `python-api` if you're using a Conda environment). Then, install Flask using `pip`:
 
@@ -59,10 +59,34 @@ To install Flask, you need to ensure you're in the correct environment (e.g., `p
 pip install flask
 ```
 
-## 5. Run Flask
+### 5. Run Flask
 ```bash
 flask run
 ```
+
+# Docker (A Different Approach to Local Setup)
+
+## Docker Commands for Python API
+
+### 1. Docker Build
+
+```bash
+docker build -t python-api .
+```
+### 2. Docker run
+
+```bash
+docker run -p 5005:5000 python-api
+```
+
+### 3. Check endpoint
+Verify if you see the content correctly.
+```bash
+http://127.0.0.1:5005/store
+```
+
+
+
 
 ## Example API Endpoint
 
