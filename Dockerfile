@@ -4,36 +4,32 @@ FROM continuumio/miniconda3
 # Set the working directory
 WORKDIR /app
 
-# Copy the requirements.txt file first for better caching
+# Copy the requirements.txt file for better caching
 COPY requirements.txt .
 
-# Create a conda environment called python-api and install dependencies
-RUN conda create -n python-api python=3.10 flask && \
-    conda install -n python-api --file requirements.txt --solver=classic && \
+# Create a conda environment called python-api, install Flask and other Python dependencies
+RUN conda create -n python-api python=3.10 flask --yes && \
+    conda install -n python-api --file requirements.txt --solver=classic --yes && \
     conda clean -afy
 
-# Install R and rpy2 in the same environment
-RUN conda install -n python-api -c conda-forge r-base rpy2 --solver=classic && \
+# Install R, rpy2, and necessary system dependencies in the same Conda environment
+RUN conda install -n python-api -c conda-forge r-base rpy2 r-devtools libcurl libxml2 --solver=classic --yes && \
     conda clean -afy
 
-# Set R_HOME
-# ENV R_HOME /opt/conda/envs/python-api/lib/R
+# Install PCAmixdata within the conda R environment
+RUN conda run -n python-api R -e "install.packages('PCAmixdata', repos='https://cloud.r-project.org')"
 
-# Optional: Force ABI mode for rpy2
-# ENV RPY2_CFFI_MODE ABI
-
-# Activate the environment and set it as the default
+# Set the environment path to the conda environment
 ENV PATH /opt/conda/envs/python-api/bin:$PATH
 
-# Optionally, install other packages
-#RUN conda install -n python-api -c conda-forge PCAmixdata --solver=classic && \
-#    conda clean -afy
+# Optional: Set R_HOME for rpy2 if needed
+# ENV R_HOME /opt/conda/envs/python-api/lib/R
 
-# Expose the port the app runs on
+# Expose the port that Flask will run on
 EXPOSE 5000
 
-# Copy the rest of the application
+# Copy the rest of the application code
 COPY . .
 
-# Command to run the Flask application
-CMD ["flask", "run", "--host", "0.0.0.0"]
+# Activate the environment and run the Flask application
+CMD ["conda", "run", "-n", "python-api", "flask", "run", "--host", "0.0.0.0"]
